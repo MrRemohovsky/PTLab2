@@ -1,28 +1,323 @@
 <!DOCTYPE html>
-<html>
+<html lang="">
 <head>
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <title>Покупка</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+        
+        h3 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        input[type="text"],
+        input[type="hidden"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .promo-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .promo-input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        .promo-input-wrapper input {
+            flex: 1;
+        }
+        
+        button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .clear-promo-btn {
+            padding: 10px 12px;
+            background: #e74c3c;
+            width: auto;
+        }
+        
+        .clear-promo-btn:hover {
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .price-section {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 25px;
+        }
+        
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        
+        .price-row strong {
+            color: #333;
+        }
+        
+        .discount-row {
+            color: #e74c3c;
+        }
+        
+        .total-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #667eea;
+            padding-top: 10px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .status-message {
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <div>
-        <h3>Покупка</h3>
-        <form method="post">{% csrf_token %}
-            <input type="hidden" value="{{ view.kwargs.product_id }}" name="product" />
-            <table>
-                <tr>
-                    <td><p>Введите свое имя </p></td>
-                    <td><input type="text" name="person" /> </td>
-                </tr>
-                <tr>
-                    <td><p>Введите адрес доставки:</p></td>
-                    <td>
-                        <input type="text" name="address" />
-                    </td>
-                </tr>
-                <tr><td><input type="submit" value="Отправить" /> </td><td></td></tr>
-            </table>
+    <div class="container">
+        <h3>🛒 Оформление покупки</h3>
+        
+        <form id="purchaseForm" method="post">{% csrf_token %}
+            <input type="hidden" id="productId" name="product" value="{{ product.id }}" />
+            
+            <div class="price-section">
+                <div class="price-row">
+                    <span>Товар:</span>
+                    <strong>{{ product.name }}</strong>
+                </div>
+                <div class="price-row">
+                    <span>Цена товара:</span>
+                    <strong id="basePrice">{{ product.price }} ₽</strong>
+                </div>
+                <div class="price-row discount-row hidden" id="discountRow">
+                    <span>Скидка (<span id="discountPercent"></span>%):</span>
+                    <strong id="discountAmount">-0 ₽</strong>
+                </div>
+                <div class="price-row total-price">
+                    <span>ИТОГО:</span>
+                    <strong id="totalPrice">{{ product.price }} ₽</strong>
+                </div>
+            </div>
+            
+            <div class="promo-section">
+                <label>Скидочный купон (опционально)</label>
+                <div id="promoMessage" class="status-message hidden"></div>
+                <div class="promo-input-wrapper">
+                    <input 
+                        type="text" 
+                        id="promoInput" 
+                        placeholder="Введите код купона"
+                        autocomplete="off"
+                    />
+                    <button type="button" id="checkPromoBtn" onclick="checkPromo()">Применить</button>
+                    <button type="button" class="clear-promo-btn hidden" id="clearPromoBtn" onclick="clearPromo()" title="Очистить купон">✕</button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="person">Ваше имя:</label>
+                <input type="text" id="person" name="person" required />
+            </div>
+            
+            <div class="form-group">
+                <label for="address">Адрес доставки:</label>
+                <input type="text" id="address" name="address" required />
+            </div>
+            
+            <input type="hidden" id="promocode" name="promocode" />
+            
+            <button type="submit" class="submit-btn">Отправить заказ</button>
         </form>
     </div>
+    <script>
+        const basePrice = parseFloat("{{ product.price }}");
+        let currentDiscount = 0;
+        let currentPromoId = null;
+
+        function updatePrice() {
+            const discountAmount = (basePrice * currentDiscount) / 100;
+            const totalPrice = basePrice - discountAmount;
+
+            document.getElementById('totalPrice').textContent = totalPrice.toFixed(2) + ' ₽';
+
+            if (currentDiscount > 0) {
+                document.getElementById('discountRow').classList.remove('hidden');
+                document.getElementById('discountPercent').textContent = currentDiscount;
+                document.getElementById('discountAmount').textContent = '-' + discountAmount.toFixed(2) + ' ₽';
+            } else {
+                document.getElementById('discountRow').classList.add('hidden');
+            }
+        }
+
+        function showMessage(message, isError = false) {
+            const messageEl = document.getElementById('promoMessage');
+            messageEl.textContent = message;
+            messageEl.className = 'status-message ' + (isError ? 'status-error' : 'status-success');
+            messageEl.classList.remove('hidden');
+
+            setTimeout(() => {
+                messageEl.classList.add('hidden');
+            }, 5000);
+        }
+
+        function checkPromo() {
+            const promoName = document.getElementById('promoInput').value.trim();
+
+            if (!promoName) {
+                showMessage('Введите код купона', true);
+                return;
+            }
+
+            document.getElementById('checkPromoBtn').disabled = true;
+
+            fetch('/check_promo/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({ promo_name: promoName })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('checkPromoBtn').disabled = false;
+
+                if (data.valid) {
+                    currentDiscount = data.discount_percent;
+                    currentPromoId = promoName;
+                    document.getElementById('promocode').value = promoName;
+                    document.getElementById('promoInput').disabled = true;
+                    document.getElementById('checkPromoBtn').disabled = true;
+                    document.getElementById('clearPromoBtn').classList.remove('hidden');
+                    updatePrice();
+                    showMessage(data.message, false);
+                } else {
+                    showMessage(data.message, true);
+                }
+            })
+            .catch(error => {
+                document.getElementById('checkPromoBtn').disabled = false;
+                showMessage('Ошибка подключения', true);
+                console.error('Error:', error);
+            });
+        }
+
+        function clearPromo() {
+            currentDiscount = 0;
+            currentPromoId = null;
+            document.getElementById('promoInput').value = '';
+            document.getElementById('promoInput').disabled = false;
+            document.getElementById('checkPromoBtn').disabled = false;
+            document.getElementById('clearPromoBtn').classList.add('hidden');
+            document.getElementById('promocode').value = '';
+            updatePrice();
+            showMessage('Купон удален', false);
+        }
+
+        document.getElementById('promoInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                checkPromo();
+            }
+        });
+
+    </script>
 </body>
 </html>
