@@ -39,13 +39,11 @@ def check_promocode(request):
         data = json.loads(request.body)
         promo_name = data.get('promo_name', '').strip()
 
-        if not promo_name:
-            return JsonResponse({'valid': False, 'message': 'Введите купон'})
-
         promo_code = PromoCode.objects.get(name__iexact=promo_name)
         return JsonResponse({
             'valid': True,
             'discount_percent': promo_code.discount_percent,
+            'promo_id': promo_code.id,
             'message': f'Скидка {promo_code.discount_percent}% применена'
         })
     except PromoCode.DoesNotExist:

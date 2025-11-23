@@ -221,7 +221,7 @@
                 <input type="text" id="address" name="address" required />
             </div>
             
-            <input type="hidden" id="promocode" name="promocode" />
+            <input type="hidden" id="promo_code" name="promo_code" />
             
             <button type="submit" class="submit-btn">Отправить заказ</button>
         </form>
@@ -282,7 +282,7 @@
                 if (data.valid) {
                     currentDiscount = data.discount_percent;
                     currentPromoId = promoName;
-                    document.getElementById('promocode').value = promoName;
+                    document.getElementById('promo_code').value = data.promo_id;
                     document.getElementById('promoInput').disabled = true;
                     document.getElementById('checkPromoBtn').disabled = true;
                     document.getElementById('clearPromoBtn').classList.remove('hidden');
@@ -306,7 +306,7 @@
             document.getElementById('promoInput').disabled = false;
             document.getElementById('checkPromoBtn').disabled = false;
             document.getElementById('clearPromoBtn').classList.add('hidden');
-            document.getElementById('promocode').value = '';
+            document.getElementById('promo_code').value = '';
             updatePrice();
             showMessage('Купон удален', false);
         }
@@ -318,6 +318,18 @@
             }
         });
 
+        window.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('person').value = '';
+            document.getElementById('address').value = '';
+            document.getElementById('promo_code').value = '';
+            document.getElementById('promoInput').value = '';
+            currentDiscount = 0;
+            currentPromoId = null;
+            document.getElementById('promoInput').disabled = false;
+            document.getElementById('checkPromoBtn').disabled = false;
+            document.getElementById('clearPromoBtn').classList.add('hidden');
+            updatePrice();
+        });
     </script>
 </body>
 </html>
