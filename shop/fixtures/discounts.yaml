@@ -1,0 +1,15 @@
+- model: shop.promocode
+  pk: 1
+  fields:
+    name: HVGYFFFER1234
+    discount_percent: 5
+- model: shop.promocode
+  pk: 2
+  fields:
+    name: OOO10DISCOUNT
+    discount_percent: 10
+- model: shop.promocode
+  pk: 3
+  fields:
+    name: HALYAVA151515
+    discount_percent: 15

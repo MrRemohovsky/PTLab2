@@ -1,3 +1,68 @@
+# Python
 __pycache__/
-.DS_Store
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.pyo
+
+# Virtual environments
 .env
+venv/
+.venv/
+ENV/
+env/
+# pipenv, poetry
+.Python
+pip-log.txt
+poetry.lock
+
+# macOS
+.DS_Store
+
+# Django specific
+db.sqlite3
+/static/
+/media/
+local_settings.py
+.settings/
+.secret/
+*.log
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+
+# Coverage, test, debug
+.coverage
+*.cover
+htmlcov/
+*.log
+nosetests.xml
+coverage.xml
+*.mo
+*.pot
+
+# Fixtures and migrations
+*.pot
+*.pyc
+*.pyo
+*.mo
+*.migrations/
+*.sqlite3
+
+# Thumbnails
+*_thumb.*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Other
+*.bak
+*.tmp
+*.orig
