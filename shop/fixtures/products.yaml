@@ -1,15 +1,25 @@
 - model: shop.product
   pk: 1
   fields:
-    name: Стол
-    price: 2000
+    name: Плюшевый мишка
+    price: 150
 - model: shop.product
   pk: 2
   fields:
-    name: Стул
-    price: 1000
+    name: Воздушный шарик
+    price: 500
 - model: shop.product
   pk: 3
   fields:
-    name: Табурет
-    price: 500
+    name: Велосипед с принтом трансформеров
+    price: 13000
+- model: shop.product
+  pk: 4
+  fields:
+    name: Лазерный автомат
+    price: 1500
+- model: shop.product
+  pk: 4
+  fields:
+    name: Набор Лего Оптимус-Прайм
+    price: 23000
